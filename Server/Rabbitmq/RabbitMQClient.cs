@@ -9,8 +9,8 @@ namespace Server.Rabbitmq;
 public class RabbitMQClient 
 {
 
-  private const string REQUEST_QUEUE = "request_queue";
-  private const string RESPONSE_QUEUE = "response_queue";
+  private const string REQUEST_QUEUE = "aisite_request_queue";
+  private const string RESPONSE_QUEUE = "aisite_response_queue";
 
   private readonly ConnectionFactory _factory;
   private readonly IConnection _connection;
