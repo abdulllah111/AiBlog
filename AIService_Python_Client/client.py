@@ -1,40 +1,12 @@
 import pika
 import gpt
 import threading
-import multiprocessing
+# import asyncio
 from Protos.assistantai_pb2 import PromtRequest
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
 channel.queue_declare(queue='aisite_request_queue')
-
-context_for_titles = [] 
-context_for_titles.append({"role": "system", "content": "Ты являешься копирайтером блога."})
-context_for_titles.append({"role": "user", "content": "Твоя цель составить 5 заголовков для статей блога. Ключевые слова: спорт, похудение, правильное питание, набор мышечной массы. Предоставь ответ конкретно в виде: заголовок1;заголовок2;заголовокn"})
-context_for_titles.append({"role": "assistant", "content": "5 эффективных упражнений для спорта и похудения;Как правильное питание помогает достичь идеальной формы;Секреты набора мышечной массы при занятиях спортом;Пять правил правильного питания для успешного похудения;Как спорт и правильное питание влияют на физическую форму и самочувствие"})
-context_for_titles.append({"role": "user", "content": "Твоя цель составить 5 заголовков для статей блога. Ключевые слова: мода, стильная одежда, стиль. Предоставить ответ конкретно в виде: заголовок1;заголовок2;заголовокn"})
-context_for_titles.append({"role": "assistant", "content": "Топ-10 модных трендов этого сезона;Как создать стильный образ с минимальными затратами;Секреты стильной одежды для каждого типа фигуры;5 основных правил стильного образа;Как создать свой уникальный стиль"})
-context_for_titles.append({"role": "user", "content": "Мотивация, успех, стремление"})
-context_for_titles.append({"role": "assistant", "content": "Как найти мотивацию для достижения успеха;Как его достичь и сохранить;Как стремление к достижению целей влияет на нашу жизнь;Кекреты постоянного движения вперед;Как преодолеть трудности и достичь успеха"})
-
-
-
-# def generate_posts(message):
-    
-#     context_for_titles.append({"role": "user", "content": message})  
-#     titles = gpt.Generate(context_for_titles).split(";")
-
-#     # titles = ["5 эффективных упражнений для спорта и похудения"]
-
-#     _context_for_text = []
-#     response = []
-
-#     for item in titles:
-#         _context_for_text = context_for_text
-#         _context_for_text.append({"role": "user", "content": "Напиши короткую статью размером в 1000 знаков на тему: " + item})
-#         response.append({"title": item, "text": gpt.Generate(_context_for_text)})
-
-#     return response
 
 
 def generate_text(title):
@@ -54,10 +26,23 @@ def generate_text(title):
 
     
 def generate_posts(message):
-    context_for_titles.append({"role": "user", "content": message})  
-    titles = gpt.Generate(context_for_titles).split(";")
-    response = []
+    context_for_titles = [] 
+    context_for_titles.append({"role": "system", "content": "Ты являешься копирайтером блога."})
+    context_for_titles.append({"role": "user", "content": "Твоя цель составить 5 заголовков для статей блога. Ключевые слова: спорт, похудение, правильное питание, набор мышечной массы. Предоставь ответ конкретно в виде: заголовок1;заголовок2;заголовокn"})
+    context_for_titles.append({"role": "assistant", "content": "5 эффективных упражнений для спорта и похудения;Как правильное питание помогает достичь идеальной формы;Секреты набора мышечной массы при занятиях спортом;Пять правил правильного питания для успешного похудения;Как спорт и правильное питание влияют на физическую форму и самочувствие"})
+    context_for_titles.append({"role": "user", "content": "Твоя цель составить 5 заголовков для статей блога. Ключевые слова: мода, стильная одежда, стиль. Предоставить ответ конкретно в виде: заголовок1;заголовок2;заголовокn"})
+    context_for_titles.append({"role": "assistant", "content": "Топ-10 модных трендов этого сезона;Как создать стильный образ с минимальными затратами;Секреты стильной одежды для каждого типа фигуры;5 основных правил стильного образа;Как создать свой уникальный стиль"})
+    context_for_titles.append({"role": "user", "content": "Мотивация, успех, стремление"})
+    context_for_titles.append({"role": "assistant", "content": "Как найти мотивацию для достижения успеха;Как его достичь и сохранить;Как стремление к достижению целей влияет на нашу жизнь;Кекреты постоянного движения вперед;Как преодолеть трудности и достичь успеха"})
 
+
+    context_for_titles.append({"role": "user", "content": message})  
+    titles = gpt.Generate(context_for_titles)
+    if ";" in titles:
+        titles = titles.split(";")
+    else:
+        return "NoN"
+    response = []
     thread_results = []
     lock = threading.Lock()
 
@@ -87,6 +72,7 @@ def callback(ch, method, properties, body):
 
 
     response = generate_posts(message)
+    # response = "test"
 
 
     ch.basic_publish(exchange='',
