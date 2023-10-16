@@ -24,7 +24,7 @@ def Generate(context):
     try:
         response = g4f.ChatCompletion.create(
             # model="gpt-3.5-turbo",
-            model = gpt_35_long,
+            model = gpt_35_turbo,
             messages=context,
             # provider=RetryProvider
         )

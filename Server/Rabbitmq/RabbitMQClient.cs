@@ -35,12 +35,11 @@ public class RabbitMQClient
                           arguments: null);
   }
 
-  public async Task<string> SendMessageAsync(PromtRequest request)
+  public async Task<string[]> SendMessageAsync(PromtRequest request)
   {
     var props = _channel.CreateBasicProperties();
     props.CorrelationId = Guid.NewGuid().ToString();
     
-    // var body = Encoding.UTF8.GetBytes(message);
     var body = request.ToByteArray();
 
 
@@ -49,22 +48,29 @@ public class RabbitMQClient
                           basicProperties: props,
                           body: body);
 
+
+    var responses = new List<string>();
+
     var consumer = new EventingBasicConsumer(_channel);
     
-    var tcs = new TaskCompletionSource<string>();
+    var tcs = new TaskCompletionSource<string[]>();    
 
+    _consumerTag = _channel.BasicConsume(RESPONSE_QUEUE, true, consumer);
+    
     consumer.Received += (sender, ea) => 
     {
         if(ea.BasicProperties.CorrelationId == props.CorrelationId)
         {
           var response = Encoding.UTF8.GetString(ea.Body.ToArray());
-          tcs.TrySetResult(response);
-          _channel.BasicCancel(_consumerTag); 
+          if(response.StartsWith("last_response")){
+            _channel.BasicCancel(_consumerTag);
+            tcs.SetResult(responses.ToArray());
+          }
+          responses.Add(response);
         }
     };
 
-    _consumerTag = _channel.BasicConsume(RESPONSE_QUEUE, true, consumer);
-    
+
     return await tcs.Task;
   }
 }
