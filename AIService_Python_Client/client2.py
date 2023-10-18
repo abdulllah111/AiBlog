@@ -51,31 +51,37 @@ def callback(ch, method, properties, body):
     
     message = PromtRequest()
     message.ParseFromString(body)
-
-    titles = generate_titles(message.message)
     
-    lock = threading.Lock()
+    titles = generate_titles(message.message)
+    if(titles != "NoN"):
+        lock = threading.Lock()
 
-    def process_title(title):
-        result = generate_text(title)
-        with lock:
-            ch.basic_publish(exchange='',
+        def process_title(title):
+            result = generate_text(title)
+            with lock:
+                ch.basic_publish(exchange='',
+                            routing_key='aisite_response_queue',
+                            properties=pika.BasicProperties(
+                                correlation_id=properties.correlation_id),
+                            body=str(result))
+
+        
+        # Создаем и запускаем потоки для обработки каждого заголовка
+        threads = []
+        for title in titles:
+            thread = threading.Thread(target=process_title, args=(title,))
+            threads.append(thread)
+            thread.start()
+
+        # Ждем завершения всех потоков
+        for thread in threads:
+            thread.join()
+    else:
+        ch.basic_publish(exchange='',
                          routing_key='aisite_response_queue',
                          properties=pika.BasicProperties(
                              correlation_id=properties.correlation_id),
-                         body=str(result))
-
-    
-    # Создаем и запускаем потоки для обработки каждого заголовка
-    threads = []
-    for title in titles:
-        thread = threading.Thread(target=process_title, args=(title,))
-        threads.append(thread)
-        thread.start()
-
-    # Ждем завершения всех потоков
-    for thread in threads:
-        thread.join()
+                         body="NoN")
 
     ch.basic_publish(exchange='',
                          routing_key='aisite_response_queue',

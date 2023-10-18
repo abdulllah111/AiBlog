@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x61ssistantai.proto\x12\x0b\x61ssistantai\"/\n\x0cPromtRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06userid\x18\x02 \x01(\t\"1\n\rPromtResponse\x12\x10\n\x08response\x18\x01 \x01(\t\x12\x0e\n\x06userid\x18\x02 \x01(\t2_\n\x15TelegramClientService\x12\x46\n\x0bSendMessage\x12\x19.assistantai.PromtRequest\x1a\x1a.assistantai.PromtResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x61ssistantai.proto\x12\x0b\x61ssistantai\"\x1f\n\x0cPromtRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"!\n\rPromtResponse\x12\x10\n\x08response\x18\x01 \x01(\t2_\n\x15TelegramClientService\x12\x46\n\x0bSendMessage\x12\x19.assistantai.PromtRequest\x1a\x1a.assistantai.PromtResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,9 +21,9 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'assistantai_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _globals['_PROMTREQUEST']._serialized_start=34
-  _globals['_PROMTREQUEST']._serialized_end=81
-  _globals['_PROMTRESPONSE']._serialized_start=83
-  _globals['_PROMTRESPONSE']._serialized_end=132
-  _globals['_TELEGRAMCLIENTSERVICE']._serialized_start=134
-  _globals['_TELEGRAMCLIENTSERVICE']._serialized_end=229
+  _globals['_PROMTREQUEST']._serialized_end=65
+  _globals['_PROMTRESPONSE']._serialized_start=67
+  _globals['_PROMTRESPONSE']._serialized_end=100
+  _globals['_TELEGRAMCLIENTSERVICE']._serialized_start=102
+  _globals['_TELEGRAMCLIENTSERVICE']._serialized_end=197
 # @@protoc_insertion_point(module_scope)

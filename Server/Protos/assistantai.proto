@@ -10,10 +10,8 @@ service TelegramClientService {
 
 message PromtRequest {
   string message = 1;
-  string userid = 2;
 }
 
 message PromtResponse {
   string response = 1;
-  string userid = 2;
 }
