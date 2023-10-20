@@ -2,7 +2,7 @@ import mongoose, { mongo } from "mongoose";
 
 const PostScheme = new mongoose.Schema(
   {
-    fullName: {
+    title: {
       type: String,
       required: true,
     },

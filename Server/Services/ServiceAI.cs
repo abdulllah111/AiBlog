@@ -25,9 +25,12 @@ public class ServiceAI : TelegramClientService.TelegramClientServiceBase
         var res = "[";
 
         if(response[0] != "NoN"){
+            int i = 0;
             foreach (var item in response)
             {
-                res += $"{item},";
+                if (i != response.Length -1) res += $"{item},";
+                else res += item;
+                i++;
             }
             return new PromtResponse { Response = $"{res}]"};
         }

@@ -2,6 +2,7 @@ import express from "express";
 
 import mongoose from "mongoose";
 
+
 import { loginValidator, registerValidator } from "./validators/validation.js";
 import * as UserController from "./controllers/UserController.js";
 import * as PostController from "./controllers/PostController.js";
@@ -9,7 +10,9 @@ import * as PostController from "./controllers/PostController.js";
 
 
 
+
 import checkAuth from "./utils/checkAuth.js";
+import generatePosts from "./utils/generatePosts.js";
 import Post from "./models/Post.js";
 
 mongoose
@@ -27,11 +30,18 @@ const app = express();
 
 app.use(express.json());
 
+
 app.get("/auth/me", checkAuth, UserController.getMe);
 app.post("/auth/login", loginValidator, UserController.login);
 app.post("/auth/register", registerValidator, UserController.register);
 
-app.post("/posts/autocreate", checkAuth, PostController.autoCreate);
+app.get("/posts", PostController.getAll);
+app.get("/posts/_id", PostController.getOne);
+// app.post("/posts", checkAuth, PostController.create);
+app.post("/posts/autocreate/", checkAuth, generatePosts, PostController.autoCreate);
+// app.put("/posts", checkAuth, PostController.put);
+// app.delete("/posts", checkAuth, PostController.delete);
+
 
 
 app.listen(3000, (error) => {
