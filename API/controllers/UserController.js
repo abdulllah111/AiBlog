@@ -1,17 +1,11 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import UserModel from "../models/User.js";
-import { validationResult } from "express-validator";
-
 
 export const register = async (req, res) => {
   //регистрация через mongoose
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errors.array());
-    }
-
+    
     const password = req.body.password;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
@@ -65,7 +59,7 @@ export const login = async (req, res) => {
         _id: user._id,
       },
       "abdul.arabp",
-      { expiresIn: "1h" }
+      { expiresIn: "12h" }
     );
 
     const { passwordHash, ...userData } = user._doc;

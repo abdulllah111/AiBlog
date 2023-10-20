@@ -1,24 +1,18 @@
 import express from "express";
-
 import mongoose from "mongoose";
 
+import {
+  loginValidation,
+  registerValidation,
+  postCreateValidation,
+} from "./validators/validation.js";
 
-import { loginValidator, registerValidator } from "./validators/validation.js";
-import * as UserController from "./controllers/UserController.js";
-import * as PostController from "./controllers/PostController.js";
-
-
-
-
-
-import checkAuth from "./utils/checkAuth.js";
-import generatePosts from "./utils/generatePosts.js";
-import Post from "./models/Post.js";
+import { UserController, PostController } from "./controllers/index.js";
+import { checkAuth, generatePosts, handeValidError } from "./utils/index.js";
+import { DB_CONNECT } from "./configuration.js";
 
 mongoose
-  .connect(
-    "mongodb+srv://admin:abdularabp@cluster0.rck2y25.mongodb.net/aiblog?retryWrites=true&w=majority"
-  )
+  .connect(DB_CONNECT)
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -30,19 +24,38 @@ const app = express();
 
 app.use(express.json());
 
-
 app.get("/auth/me", checkAuth, UserController.getMe);
-app.post("/auth/login", loginValidator, UserController.login);
-app.post("/auth/register", registerValidator, UserController.register);
+app.post("/auth/login", loginValidation, handeValidError, UserController.login);
+app.post(
+  "/auth/register",
+  registerValidation,
+  handeValidError,
+  UserController.register
+);
 
 app.get("/posts", PostController.getAll);
-app.get("/posts/_id", PostController.getOne);
-// app.post("/posts", checkAuth, PostController.create);
-app.post("/posts/autocreate/", checkAuth, generatePosts, PostController.autoCreate);
-// app.put("/posts", checkAuth, PostController.put);
-// app.delete("/posts", checkAuth, PostController.delete);
-
-
+app.get("/posts/:id", PostController.getOne);
+app.post(
+  "/posts",
+  checkAuth,
+  postCreateValidation,
+  handeValidError,
+  PostController.create
+);
+app.post(
+  "/posts/autocreate/",
+  checkAuth,
+  generatePosts,
+  PostController.autoCreate
+);
+app.put(
+  "/posts",
+  checkAuth,
+  postCreateValidation,
+  handeValidError,
+  PostController.put
+);
+app.delete("/posts/:id", checkAuth, PostController.remove);
 
 app.listen(3000, (error) => {
   if (error) {

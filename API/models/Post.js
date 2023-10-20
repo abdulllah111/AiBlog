@@ -5,11 +5,12 @@ const PostScheme = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      unique: false,
     },
     text: {
       type: String,
       required: true,
-      unique: true,
+      unique: false,
     },
     tags: {
       type: Array,
@@ -20,9 +21,9 @@ const PostScheme = new mongoose.Schema(
       default: 0,
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
 
     imageUrl: String,
